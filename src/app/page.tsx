@@ -1,4 +1,4 @@
-﻿const event = {
+const event = {
   title: "Door List Live",
   date: "12 de diciembre de 2026",
   dateTime: "2026-12-12",
@@ -11,12 +11,14 @@ export default function Home() {
       <header className="flex items-center gap-2.5 py-8 text-lg font-bold tracking-tight">
         <span aria-hidden="true" className="h-5 w-3 rounded-t-full border-2 border-lime-300" />
         door list<span className="text-lime-300">.</span>
+        <a href="/organizador" className="ml-auto text-sm font-medium text-neutral-300 hover:text-lime-300">Panel del organizador →</a>
       </header>
       <main className="flex flex-1 items-center py-12 sm:py-20">
         <section aria-labelledby="event-title" className="w-full overflow-hidden rounded-3xl border border-white/15 bg-neutral-900">
           <div className="grid md:grid-cols-[1.5fr_1fr]">
             <div className="p-8 sm:p-14">
               <p className="mb-8 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">Tu próximo encuentro</p>
+              <p className="mb-4 text-lg text-neutral-300">¡Bienvenido a Door List!</p>
               <h1 id="event-title" className="max-w-xl text-5xl font-semibold leading-[1.05] tracking-tight sm:text-7xl">{event.title}</h1>
               <dl className="mt-12 space-y-6">
                 <div>
