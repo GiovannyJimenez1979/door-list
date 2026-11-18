@@ -27,68 +27,46 @@ create index ticket_types_event_id_idx on public.ticket_types (event_id);
 alter table public.events enable row level security;
 alter table public.ticket_types enable row level security;
 
--- Explicit grants avoid relying on project-specific default privileges.
 revoke all on public.events, public.ticket_types from public, anon, authenticated;
 grant select on public.events, public.ticket_types to anon;
 grant select, insert, update, delete on public.events, public.ticket_types to authenticated;
 grant all on public.events, public.ticket_types to service_role;
 
 create policy events_read_published on public.events
-  for select to anon, authenticated
-  using (status = 'publicado');
-
+  for select to anon, authenticated using (status = 'publicado');
 create policy events_read_owned on public.events
-  for select to authenticated
-  using (organizer_id = (select auth.uid()));
-
+  for select to authenticated using (organizer_id = (select auth.uid()));
 create policy events_insert_owned on public.events
-  for insert to authenticated
-  with check (organizer_id = (select auth.uid()));
-
+  for insert to authenticated with check (organizer_id = (select auth.uid()));
 create policy events_update_owned on public.events
-  for update to authenticated
-  using (organizer_id = (select auth.uid()))
+  for update to authenticated using (organizer_id = (select auth.uid()))
   with check (organizer_id = (select auth.uid()));
-
 create policy events_delete_owned on public.events
-  for delete to authenticated
-  using (organizer_id = (select auth.uid()));
+  for delete to authenticated using (organizer_id = (select auth.uid()));
 
 create policy ticket_types_read_visible on public.ticket_types
-  for select to anon, authenticated
-  using (exists (
+  for select to anon, authenticated using (exists (
     select 1 from public.events as event
     where event.id = ticket_types.event_id
       and (event.status = 'publicado' or event.organizer_id = (select auth.uid()))
   ));
-
 create policy ticket_types_insert_owned on public.ticket_types
-  for insert to authenticated
-  with check (exists (
+  for insert to authenticated with check (exists (
     select 1 from public.events as event
-    where event.id = ticket_types.event_id
-      and event.organizer_id = (select auth.uid())
+    where event.id = ticket_types.event_id and event.organizer_id = (select auth.uid())
   ));
-
 create policy ticket_types_update_owned on public.ticket_types
-  for update to authenticated
-  using (exists (
+  for update to authenticated using (exists (
     select 1 from public.events as event
-    where event.id = ticket_types.event_id
-      and event.organizer_id = (select auth.uid())
-  ))
-  with check (exists (
+    where event.id = ticket_types.event_id and event.organizer_id = (select auth.uid())
+  )) with check (exists (
     select 1 from public.events as event
-    where event.id = ticket_types.event_id
-      and event.organizer_id = (select auth.uid())
+    where event.id = ticket_types.event_id and event.organizer_id = (select auth.uid())
   ));
-
 create policy ticket_types_delete_owned on public.ticket_types
-  for delete to authenticated
-  using (exists (
+  for delete to authenticated using (exists (
     select 1 from public.events as event
-    where event.id = ticket_types.event_id
-      and event.organizer_id = (select auth.uid())
+    where event.id = ticket_types.event_id and event.organizer_id = (select auth.uid())
   ));
 
 commit;

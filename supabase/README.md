@@ -1,5 +1,17 @@
 # Modelo de datos de Door List
 
+Aplicar las migraciones en este orden: `20261109000000_create_events_and_ticket_types.sql`,
+`20261112000000_event_capacity.sql`, `20261116000000_public_registrations.sql` y
+`20261117000000_add_tickets_to_existing_registrations.sql`.
+
+La migración de registros crea `registration_options` y `create_registration`.
+Ambas se pueden llamar con la clave pública sin sesión. La tabla de registros no
+concede lectura ni escritura directa a visitantes; la función de creación
+comprueba publicación, fecha y cupos dentro de una transacción. Solo se admite
+un email por evento. La migración de tickets evoluciona el registro para crear
+un código aleatorio y estado `valid`; `ticket_by_code` expone únicamente los
+datos asociados a un código.
+
 Aplicar también `migrations/20261112000000_event_capacity.sql` después de la
 migración inicial. Agrega el aforo obligatorio del evento y rechaza cambios que
 hagan que la suma de los tipos exceda ese límite, incluso al reducir el aforo

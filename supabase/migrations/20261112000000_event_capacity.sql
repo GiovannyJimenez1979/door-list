@@ -5,7 +5,6 @@ update public.events e set capacity = greatest(1, coalesce((select sum(t.capacit
 alter table public.events alter column capacity set not null;
 alter table public.events add constraint events_capacity_positive check (capacity > 0);
 
--- Serialize changes to each event with its ticket type changes.
 create function public.check_ticket_capacity() returns trigger
 language plpgsql set search_path = public as $$
 declare event_capacity integer; allocated bigint;
@@ -31,4 +30,5 @@ begin
 end $$;
 create trigger event_capacity_check before update of capacity on public.events
   for each row execute function public.check_event_capacity();
+
 commit;
