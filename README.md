@@ -21,8 +21,9 @@ npm start
 ```
 
 La ruta `/` muestra eventos publicados con fecha de hoy o posterior. Cada evento
-tiene una página pública `/eventos/[id]` para registrarse sin iniciar sesión,
-con nombre, email y tipo de entrada. El registro reserva un cupo y se cierra
+tiene una página pública `/eventos/[id]/registro` para registrarse sin iniciar sesión;
+`/eventos/[id]` redirige allí. El formulario solicita nombre, email y tipo de
+entrada. El registro reserva un cupo y se cierra
 después del día del evento, calculado en `America/Bogota`.
 Al confirmar, se crea una entrada con código aleatorio y estado `valid`. La
 entrada se consulta en `/tickets/[codigo]` y muestra sus datos, estado y QR.
@@ -46,7 +47,7 @@ pruebas, `onboarding@resend.dev` solo permite enviar al email propietario de la
 cuenta Resend. Para enviar a asistentes, verifica un dominio y usa un remitente
 de ese dominio.
 
-Habilita el acceso con correo y contraseña en Supabase Auth y aplica las cuatro
+Habilita el acceso con correo y contraseña en Supabase Auth y aplica las cinco
 migraciones en orden. Si está activada la confirmación de correo, el usuario debe
 confirmar su cuenta antes de iniciar sesión. Nunca uses la clave `service_role`
 en estas variables. Los cambios que excedan el aforo total se rechazan; reduce

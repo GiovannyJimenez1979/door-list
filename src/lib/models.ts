@@ -19,7 +19,7 @@ export type TicketType = {
 
 export type Ticket = {
   ticket_code: string;
-  status: "valid" | "use it" | "revoke";
+  status: "valid" | "used" | "revoked";
   attendee_name: string;
   email: string;
   event_title: string;

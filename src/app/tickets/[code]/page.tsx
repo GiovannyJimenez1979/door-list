@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase/client";
 import { formatEventDate } from "@/lib/dates";
 import type { Ticket } from "@/lib/models";
 
-const labels = { valid: "Válida", "use it": "Utilizada", revoke: "Revocada" };
+const labels = { valid: "Válida", used: "Utilizada", revoked: "Revocada" };
 export default function TicketPage() { return <Suspense fallback={<p className="p-8">Cargando entrada…</p>}><TicketContent /></Suspense>; }
 function TicketContent() {
   const { code } = useParams<{ code: string }>();
