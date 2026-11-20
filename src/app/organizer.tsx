@@ -38,9 +38,11 @@ export default function Organizer() {
     return () => data.subscription.unsubscribe();
   }, []);
   const load = useCallback(async (userId: string) => {
-    if (!supabase) return;
+    if (!supabase) return false;
     const { data, error } = await supabase.from("events").select("*, ticket_types(*)").eq("organizer_id", userId).order("starts_at");
-    if (error) setMessage(error.message); else setEvents((data ?? []) as Event[]);
+    if (error) { setMessage("No se pudieron cargar los eventos."); return false; }
+    setEvents((data ?? []) as Event[]);
+    return true;
   }, []);
   useEffect(() => { if (session) { const id = session.user.id; void Promise.resolve().then(() => load(id)); } }, [session, load]);
   useEffect(() => {
@@ -55,13 +57,13 @@ export default function Organizer() {
   async function auth(e: FormEvent, signup: boolean) {
     e.preventDefault(); if (!supabase) return; setBusy(true); setMessage("");
     const { data, error } = signup ? await supabase.auth.signUp({ email, password }) : await supabase.auth.signInWithPassword({ email, password });
-    setMessage(error ? error.message : signup && !data.session ? "Revisa tu correo para confirmar la cuenta antes de iniciar sesión." : ""); setBusy(false);
+    setMessage(error ? "No se pudo acceder a la cuenta. Revisa los datos e inténtalo de nuevo." : signup && !data.session ? "Revisa tu correo para confirmar la cuenta antes de iniciar sesión." : ""); setBusy(false);
   }
   async function saveEvent(e: FormEvent) {
     e.preventDefault(); if (!supabase || !session) return; setBusy(true); setMessage("");
     const payload = { ...form, title: form.title.trim(), description: form.description.trim(), venue: form.venue.trim(), capacity: Number(form.capacity), starts_at: new Date(form.starts_at).toISOString() };
     const result = editing ? await supabase.from("events").update(payload).eq("id", editing).select("id").single() : await supabase.from("events").insert({ ...payload, organizer_id: session.user.id }).select("id").single();
-    if (result.error) setMessage(result.error.message); else { setForm(emptyEvent); setEditing(null); setSelected(result.data.id); await load(session.user.id); setMessage("Evento guardado."); } setBusy(false);
+    if (result.error) setMessage("No se pudo guardar el evento."); else { setForm(emptyEvent); setEditing(null); setSelected(result.data.id); if (await load(session.user.id)) setMessage("Evento guardado."); } setBusy(false);
   }
   async function saveTicket(e: FormEvent) {
     e.preventDefault(); if (!supabase || !session || !active) return;
@@ -70,12 +72,12 @@ export default function Organizer() {
     setBusy(true); setMessage("");
     const payload = { name: ticketName.trim(), capacity: amount, event_id: active.id };
     const result = ticketId ? await supabase.from("ticket_types").update(payload).eq("id", ticketId).select("id").single() : await supabase.from("ticket_types").insert(payload).select("id").single();
-    if (result.error) setMessage(result.error.message); else { setTicketId(null); setTicketName(""); setTicketCapacity(""); await load(session.user.id); setMessage("Tipo de entrada guardado."); } setBusy(false);
+    if (result.error) setMessage("No se pudo guardar el tipo de entrada."); else { setTicketId(null); setTicketName(""); setTicketCapacity(""); if (await load(session.user.id)) setMessage("Tipo de entrada guardado."); } setBusy(false);
   }
   async function remove(table: "events" | "ticket_types", id: string) {
     if (!supabase || !session || !window.confirm(table === "events" ? "¿Eliminar este evento y todos sus tipos de entrada?" : "¿Eliminar este tipo de entrada?")) return;
     setBusy(true); const { error } = await supabase.from(table).delete().eq("id", id).select("id").single();
-    if (error) setMessage(error.message); else { if (table === "events") { setSelected(null); setEditing(null); setForm(emptyEvent); } else { setTicketId(null); setTicketName(""); setTicketCapacity(""); } await load(session.user.id); setMessage("Eliminado correctamente."); } setBusy(false);
+    if (error) setMessage("No se pudo eliminar el elemento."); else { if (table === "events") { setSelected(null); setEditing(null); setForm(emptyEvent); } else { setTicketId(null); setTicketName(""); setTicketCapacity(""); } if (await load(session.user.id)) setMessage("Eliminado correctamente."); } setBusy(false);
   }
 
   return <div className="mx-auto min-h-screen max-w-6xl px-6 pb-16">

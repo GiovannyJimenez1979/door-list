@@ -9,6 +9,7 @@ function escapeHtml(value: string) {
 }
 
 export async function POST(request: Request) {
+  try {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -20,7 +21,8 @@ export async function POST(request: Request) {
   const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
   const { data, error } = await supabase.rpc("ticket_by_code", { p_code: ticketCode });
   const ticket = (data as Ticket[] | null)?.[0];
-  if (error || !ticket) return NextResponse.json({ error: "No se encontró la entrada para enviar." }, { status: 404 });
+  if (error) return NextResponse.json({ error: "No se pudo consultar la entrada." }, { status: 502 });
+  if (!ticket) return NextResponse.json({ error: "No se encontró la entrada para enviar." }, { status: 404 });
   let qrResponse: Response;
   try { qrResponse = await fetch(`https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=${encodeURIComponent(ticket.ticket_code)}`); } catch { return NextResponse.json({ error: "No se pudo conectar con el generador de códigos QR." }, { status: 502 }); }
   if (!qrResponse.ok) return NextResponse.json({ error: "No se pudo generar el código QR." }, { status: 502 });
@@ -38,4 +40,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 502 });
   }
   return NextResponse.json({ sent: true });
+  } catch (error) {
+    console.error("No se pudo procesar el envío de la entrada", error);
+    return NextResponse.json({ error: "No se pudo enviar la entrada." }, { status: 500 });
+  }
 }
