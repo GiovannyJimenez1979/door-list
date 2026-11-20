@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/app/lib/supabase";
+import { supabase } from "@/lib/supabase/client";
 
 type Ticket = { ticket_code: string; status: "valid" | "use it" | "revoke"; attendee_name: string; email: string; event_title: string; event_description: string; starts_at: string; venue: string; ticket_name: string };
 const labels = { valid: "Válida", "use it": "Utilizada", revoke: "Revocada" };

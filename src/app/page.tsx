@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { supabase } from "@/app/lib/supabase";
+import { supabase } from "@/lib/supabase/client";
 
 type Event = { id: string; title: string; description: string; starts_at: string; venue: string };
 
@@ -20,7 +20,7 @@ export default function Home() {
   const [state, setState] = useState("loading");
   useEffect(() => {
     if (!supabase) return;
-    supabase.from("events").select("id,title,description,starts_at,venue").in("status", ["published", "publicado"]).order("starts_at").then(({ data, error }) => {
+    supabase.from("events").select("id,title,description,starts_at,venue").eq("status", "publicado").order("starts_at").then(({ data, error }) => {
       if (error) setState("error");
       else { setEvents((data ?? []).filter((event) => registrationIsOpen(event.starts_at))); setState("ready"); }
     });

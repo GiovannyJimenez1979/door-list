@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-type Ticket = { ticket_code: string; attendee_name: string; email: string; event_title: string; starts_at: string; venue: string };
+type TicketEmailData = { ticket_code: string; attendee_name: string; email: string; event_title: string; starts_at: string; venue: string };
 
 function escapeHtml(value: string) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   if (!ticketCode || ticketCode.length > 200) return NextResponse.json({ error: "Código de entrada inválido." }, { status: 400 });
   const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
   const { data, error } = await supabase.rpc("ticket_by_code", { p_code: ticketCode });
-  const ticket = (data as Ticket[] | null)?.[0];
+  const ticket = (data as TicketEmailData[] | null)?.[0];
   if (error || !ticket) return NextResponse.json({ error: "No se encontró la entrada para enviar." }, { status: 404 });
   let qrResponse: Response;
   try { qrResponse = await fetch(`https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=${encodeURIComponent(ticket.ticket_code)}`); } catch { return NextResponse.json({ error: "No se pudo conectar con el generador de códigos QR." }, { status: 502 }); }

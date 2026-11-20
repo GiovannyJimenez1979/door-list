@@ -3,10 +3,10 @@
 import { type Session } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { supabase } from "@/app/lib/supabase";
+import { supabase } from "@/lib/supabase/client";
 
-type Ticket = { id: string; event_id: string; name: string; capacity: number };
-type Event = { id: string; organizer_id: string; title: string; description: string; starts_at: string; venue: string; status: string; capacity: number; ticket_types: Ticket[] };
+type TicketType = { id: string; event_id: string; name: string; capacity: number };
+type Event = { id: string; organizer_id: string; title: string; description: string; starts_at: string; venue: string; status: string; capacity: number; ticket_types: TicketType[] };
 type EventForm = { title: string; description: string; starts_at: string; venue: string; status: string; capacity: string };
 const emptyEvent: EventForm = { title: "", description: "", starts_at: "", venue: "", status: "borrador", capacity: "" };
 const input = "mt-2 w-full rounded-lg border border-white/20 bg-neutral-950 px-3 py-2 text-white focus:outline-2 focus:outline-lime-300";

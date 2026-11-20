@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState, type FormEvent } from "react";
-import { supabase } from "@/app/lib/supabase";
+import { supabase } from "@/lib/supabase/client";
 type Event = { id: string; title: string; description: string; starts_at: string; venue: string };
 type Option = { ticket_type_id: string; name: string; remaining: number };
 const field = "mt-2 w-full rounded-lg border border-white/20 bg-neutral-950 px-3 py-3 text-white";
