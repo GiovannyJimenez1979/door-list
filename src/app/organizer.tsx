@@ -4,19 +4,14 @@ import { type Session } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { localDate } from "@/lib/dates";
+import type { Event } from "@/lib/models";
 
-type TicketType = { id: string; event_id: string; name: string; capacity: number };
-type Event = { id: string; organizer_id: string; title: string; description: string; starts_at: string; venue: string; status: string; capacity: number; ticket_types: TicketType[] };
 type EventForm = { title: string; description: string; starts_at: string; venue: string; status: string; capacity: string };
 const emptyEvent: EventForm = { title: "", description: "", starts_at: "", venue: "", status: "borrador", capacity: "" };
 const input = "mt-2 w-full rounded-lg border border-white/20 bg-neutral-950 px-3 py-2 text-white focus:outline-2 focus:outline-lime-300";
 const button = "rounded-lg bg-lime-300 px-4 py-2 font-semibold text-neutral-950 hover:bg-lime-200 disabled:opacity-50";
 const secondary = "rounded-lg border border-white/25 px-4 py-2 text-sm hover:border-lime-300";
-
-function localDate(value: string) {
-  const date = new Date(value);
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-}
 
 export default function Organizer() {
   const [session, setSession] = useState<Session | null>(null);
