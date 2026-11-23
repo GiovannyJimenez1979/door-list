@@ -3,7 +3,18 @@
 Aplicar las migraciones en este orden: `20261109000000_create_events_and_ticket_types.sql`,
 `20261112000000_event_capacity.sql`, `20261116000000_public_registrations.sql`,
 `20261117000000_add_tickets_to_existing_registrations.sql` y
-`20261120000000_normalize_ticket_statuses.sql`.
+`20261120000000_normalize_ticket_statuses.sql` y
+`20261123000000_organizer_registration_access.sql` y
+`20261123000001_reconcile_registration_schema.sql`.
+
+La última migración concede lectura de `registrations` solo a usuarios autenticados
+y su política RLS limita las filas a eventos cuyo `organizer_id` coincide con el
+usuario actual. `/dashboard` usa esa lectura para mostrar aforo y asistentes.
+La prueba `tests/organizer_dashboard_access.sql` comprueba acceso del dueño y
+denegación para otros organizadores y visitantes.
+La migración de reconciliación alinea bases creadas antes de usar el historial
+de la CLI: normaliza el nombre del índice único de email y evita borrar registros
+al eliminar un tipo de entrada. En bases nuevas no necesita modificar nada.
 
 La migración de registros crea `registration_options` y `create_registration`.
 Ambas se pueden llamar con la clave pública sin sesión. La tabla de registros no
@@ -13,7 +24,7 @@ un email por evento. La migración de tickets evoluciona el registro para crear
 un código aleatorio y estado `valid`; `ticket_by_code` expone únicamente los
 datos asociados a un código.
 
-La última migración transforma los estados existentes `use it` y `revoke` en
+La migración de estados transforma los valores existentes `use it` y `revoke` en
 `used` y `revoked`. Los estados vigentes son `valid`, `used` y `revoked`.
 Aplica esta migración antes de desplegar la interfaz que muestra esos estados.
 
