@@ -70,3 +70,13 @@ export type DashboardData = {
   ticketTypes: TicketTypeOccupancy[];
   registrations: AttendeeRegistration[];
 };
+
+export type DailyRegistration = {
+  day: string;
+  registrations: number;
+};
+
+export type RegistrationSeriesResponse = {
+  publishedAt: string | null;
+  days: DailyRegistration[];
+};

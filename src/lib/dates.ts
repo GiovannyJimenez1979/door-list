@@ -15,6 +15,18 @@ export function formatEventDate(value: string) {
   });
 }
 
+export function formatCalendarDay(value: string) {
+  return new Intl.DateTimeFormat("es-CO", {
+    timeZone: "UTC", day: "numeric", month: "short", year: "numeric",
+  }).format(new Date(`${value}T12:00:00Z`));
+}
+
+export function formatChartDay(value: string) {
+  return new Intl.DateTimeFormat("es-CO", {
+    timeZone: "UTC", day: "numeric", month: "short",
+  }).format(new Date(`${value}T12:00:00Z`));
+}
+
 export function localDate(value: string) {
   const date = new Date(value);
   return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);

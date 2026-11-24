@@ -7,6 +7,7 @@ import { formatEventDate } from "@/lib/dates";
 import type { DashboardData } from "@/lib/models";
 import { supabase } from "@/lib/supabase/client";
 import { loadDashboard } from "@/lib/supabase/dashboard";
+import RegistrationChart from "@/app/dashboard/[id]/RegistrationChart";
 
 const emptyData: DashboardData = { events: [], event: null, ticketTypes: [], registrations: [] };
 
@@ -98,6 +99,7 @@ export default function OrganizerDashboard({ eventId }: { eventId?: string }) {
                 <div className="mt-4 h-2 overflow-hidden rounded-full bg-neutral-700"><div className="h-full rounded-full bg-lime-300" style={{ width: `${Math.min(100, ticketType.registered / ticketType.capacity * 100)}%` }} /></div>
               </article>)}</div>}
           </section>
+          <RegistrationChart eventId={eventId} />
           <section className="mt-10" aria-labelledby="attendees-title">
             <h2 id="attendees-title" className="text-2xl font-semibold">Asistentes registrados</h2>
             {data.registrations.length === 0 ? <p className="mt-5 rounded-2xl border border-white/15 bg-neutral-900 p-6 text-neutral-400">Todavía no hay asistentes registrados.</p>
