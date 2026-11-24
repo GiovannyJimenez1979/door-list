@@ -1,0 +1,8 @@
+interface:
+  display_name: "Door List UI"
+  short_description: "Diseño consistente para la UI de Door List"
+  brand_color: "#bef264"
+  default_prompt: "Usa $door-list-ui para crear o revisar esta pantalla con el sistema de diseño de Door List."
+
+policy:
+  allow_implicit_invocation: true

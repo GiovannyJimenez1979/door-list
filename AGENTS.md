@@ -35,3 +35,7 @@ Comprueba `response.ok` antes de interpretar el cuerpo de una respuesta en el cl
 
 Registra cada migración en un archivo versionado dentro de `supabase/migrations/` y evita ejecutar SQL de esquema fuera de una migración versionada.
 Habilita RLS en toda tabla expuesta.
+
+## Sistema de diseño
+
+Antes de crear, modificar o revisar UI visible, lee y aplica `.agents/skills/door-list-ui/SKILL.md`. Esto incluye pantallas, filtros de tabla, formularios, diseño responsive y estados de carga, vacío y error. No se aplica a migraciones, rutas API sin UI, emails ni cambios de datos, tipos o lógica sin impacto visual.
