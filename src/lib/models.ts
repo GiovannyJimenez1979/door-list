@@ -39,3 +39,34 @@ export type RegistrationOption = {
   name: string;
   remaining: number;
 };
+
+export type DashboardEvent = {
+  id: string;
+  title: string;
+  startsAt: string;
+  venue: string;
+  status: Event["status"];
+  capacity: number;
+};
+
+export type TicketTypeOccupancy = {
+  id: string;
+  name: string;
+  capacity: number;
+  registered: number;
+};
+
+export type AttendeeRegistration = {
+  id: string;
+  attendeeName: string;
+  email: string;
+  ticketTypeId: string;
+  createdAt: string;
+};
+
+export type DashboardData = {
+  events: DashboardEvent[];
+  event: DashboardEvent | null;
+  ticketTypes: TicketTypeOccupancy[];
+  registrations: AttendeeRegistration[];
+};
